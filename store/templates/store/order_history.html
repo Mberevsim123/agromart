@@ -1,0 +1,82 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Order History - Agromart{% endblock %}
+
+{% block content %}
+<div class="card max-w-4xl mx-auto p-6">
+    <h2 class="text-2xl font-semibold mb-4">Order History</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert p-4 mb-4 rounded {% if message.tags == 'success' %}bg-green-100 text-green-800{% elif message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-blue-100 text-blue-800{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    {% if orders %}
+        <table class="w-full mb-4 border-collapse">
+            <thead>
+                <tr class="border-b bg-gray-100">
+                    <th class="p-2 text-left">Order ID</th>
+                    <th class="p-2 text-left">Date</th>
+                    <th class="p-2 text-left">Total</th>
+                    <th class="p-2 text-left">Status</th>
+                    <th class="p-2 text-left">Items</th>
+                    <th class="p-2 text-left">Delivery Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order in orders %}
+                    <tr class="border-b">
+                        <td class="p-2">{{ order.id }}</td>
+                        <td class="p-2">{{ order.ordered_at|date:"M d, Y" }}</td>
+                        <td class="p-2">${{ order.total_price|floatformat:2 }}</td>
+                        <td class="p-2">{{ order.status|title }}</td>
+                        <td class="p-2">
+                            <ul class="list-disc pl-4">
+                                {% for item in order.items.all %}
+                                    <li>
+                                        <a href="{% url 'product_detail' pk=item.product.pk %}" class="text-green-600 hover:underline">
+                                            {{ item.product.name }} ({{ item.quantity }} x ${{ item.unit_price|floatformat:2 }})
+                                        </a>
+                                    </li>
+                                {% empty %}
+                                    <li>No items</li>
+                                {% endfor %}
+                            </ul>
+                        </td>
+                        <td class="p-2">
+                            {% with delivery=order.delivery.first %}
+                                {% if delivery %}
+                                    {{ delivery.status|title }} (Tracking: {{ delivery.tracking_number }})
+                                {% else %}
+                                    Not Available
+                                {% endif %}
+                            {% endwith %}
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="6" class="p-2 text-center">No orders found.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% if is_paginated %}
+            <div class="mt-6 flex justify-center">
+                <div class="pagination">
+                    {% if page_obj.has_previous %}
+                        <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary bg-gray-300 hover:bg-gray-400 text-gray-800 py-1 px-3 rounded mr-2">Previous</a>
+                    {% endif %}
+                    <span class="text-gray-600">Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
+                    {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}" class="btn btn-secondary bg-gray-300 hover:bg-gray-400 text-gray-800 py-1 px-3 rounded ml-2">Next</a>
+                    {% endif %}
+                </div>
+            </div>
+        {% endif %}
+    {% else %}
+        <p class="mb-4">You have no orders yet. <a href="{% url 'product_list' %}" class="text-green-600 hover:underline">Browse products</a> to place an order.</p>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Farming Experience - Agromart{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Our Farming Experience</h2>
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <img src="{% static 'images/placeholder.jpg' %}" alt="Sustainable Farming" class="w-full h-64 object-cover rounded-lg mb-4">
+        <p class="text-gray-600 mb-4">
+            At Agromart, we partner with experienced farmers who use sustainable and eco-friendly practices to grow high-quality crops and raise livestock. Our farms employ techniques like crop rotation, organic fertilizers, and integrated pest management to ensure environmental health and product quality.
+        </p>
+        <p class="text-gray-600 mb-4">
+            With decades of collective experience, our farmers are dedicated to preserving traditional farming wisdom while embracing modern innovations. Learn more about our products and the care that goes into every harvest.
+        </p>
+        <a href="{% url 'product_list' %}" class="btn btn-primary">Explore Our Products</a>
+    </div>
+</div>
+{% endblock %}

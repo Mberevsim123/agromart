@@ -1,0 +1,75 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Place Order - Agromart{% endblock %}
+
+{% block content %}
+<div class="card max-w-4xl mx-auto p-6">
+    <h2 class="text-2xl font-semibold mb-4">Place Order</h2>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert p-4 mb-4 rounded {% if message.tags == 'success' %}bg-green-100 text-green-800{% elif message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-blue-100 text-blue-800{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    <form method="post" class="space-y-4">
+        {% csrf_token %}
+        <div class="mb-4">
+            <h3 class="text-lg font-semibold mb-2">Shipping Details</h3>
+            {{ form.shipping_address.label_tag }}
+            {{ form.shipping_address }}
+            {{ form.shipping_address.errors }}
+            <div class="flex space-x-4">
+                <div class="w-1/3">
+                    {{ form.shipping_city.label_tag }}
+                    {{ form.shipping_city }}
+                    {{ form.shipping_city.errors }}
+                </div>
+                <div class="w-1/3">
+                    {{ form.shipping_country.label_tag }}
+                    {{ form.shipping_country }}
+                    {{ form.shipping_country.errors }}
+                </div>
+                <div class="w-1/3">
+                    {{ form.shipping_postal_code.label_tag }}
+                    {{ form.shipping_postal_code }}
+                    {{ form.shipping_postal_code.errors }}
+                </div>
+            </div>
+        </div>
+        <div class="mb-4">
+            <h3 class="text-lg font-semibold mb-2">Select Products</h3>
+            <table class="w-full mb-4 border-collapse">
+                <thead>
+                    <tr class="border-b bg-gray-100">
+                        <th class="p-2 text-left">Product</th>
+                        <th class="p-2 text-left">Price</th>
+                        <th class="p-2 text-left">Stock</th>
+                        <th class="p-2 text-left">Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                        <tr class="border-b">
+                            <td class="p-2">
+                                <a href="{% url 'product_detail' pk=product.pk %}" class="text-green-600 hover:underline">{{ product.name }}</a>
+                            </td>
+                            <td class="p-2">${{ product.price|floatformat:2 }}</td>
+                            <td class="p-2">{{ product.stock }}</td>
+                            <td class="p-2">
+                                <input type="number" name="quantity_{{ product.pk }}" min="0" max="{{ product.stock }}" value="0" class="border p-2 w-16">
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="p-2 text-center">No products available.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <button type="submit" class="btn btn-primary w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded">Place Order</button>
+    </form>
+</div>
+{% endblock %}

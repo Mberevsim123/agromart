@@ -1,0 +1,24 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Types of Farming - Agromart{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Types of Farming</h2>
+    {% if categories %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for category in categories %}
+                <div class="bg-white rounded-lg shadow-md p-4">
+                    <img src="{% static 'images/placeholder.jpg' %}" alt="{{ category.name }}" class="w-full h-48 object-cover rounded-lg mb-4">
+                    <h3 class="text-lg font-semibold text-gray-700">{{ category.name }}</h3>
+                    <p class="text-gray-600 mb-4">{{ category.description|default:"Explore our range of products in this category." }}</p>
+                    <a href="{% url 'user_dashboard' %}?category={{ category.id }}" class="btn btn-primary">View Products</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-gray-600">No farming categories available at the moment.</p>
+    {% endif %}
+</div>
+{% endblock %}

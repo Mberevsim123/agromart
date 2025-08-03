@@ -1,0 +1,34 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Harvest Reports - Agromart{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Harvest Reports</h2>
+    {% if farming_products %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="p-2 text-left">Product</th>
+                        <th class="p-2 text-left">Harvest Date</th>
+                        <th class="p-2 text-left">Quantity (kg)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for product in farming_products %}
+                        <tr class="border-b">
+                            <td class="p-2">{{ product.product.name }}</td>
+                            <td class="p-2">{{ product.harvest_date|date:"Y-m-d" }}</td>
+                            <td class="p-2">{{ product.quantity|floatformat:2 }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="text-gray-600">No harvest data available at the moment.</p>
+    {% endif %}
+</div>
+{% endblock %}

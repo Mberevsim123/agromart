@@ -1,0 +1,70 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Cart - Agromart{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Your Cart</h2>
+
+    {% if messages %}
+        <div class="mb-4">
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if cart_items %}
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+                <thead>
+                    <tr class="bg-gray-100">
+                        <th class="p-2 text-left">Product</th>
+                        <th class="p-2 text-left">Price</th>
+                        <th class="p-2 text-left">Quantity</th>
+                        <th class="p-2 text-left">Subtotal</th>
+                        <th class="p-2 text-left">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in cart_items %}
+                        <tr class="border-b">
+                            <td class="p-2">{{ item.product.name }} ({{ item.product.category.name }})</td>
+                            <td class="p-2">${{ item.product.price|floatformat:2 }}</td>
+                            <td class="p-2">{{ item.quantity }}</td>
+                            <td class="p-2">${{ item.subtotal|floatformat:2 }}</td>
+                            <td class="p-2">
+                                <form method="post" action="{% url 'remove_from_cart' pk=item.pk %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-danger">Remove</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-6 flex justify-between items-center">
+            <h3 class="text-xl font-semibold text-gray-700">Total: ${{ total_price|floatformat:2 }}</h3>
+            <a href="{% url 'place_order' %}" class="btn btn-primary">Proceed to Checkout</a>
+        </div>
+
+        <!-- Shipping Details Form -->
+        <div class="mt-8">
+            <h3 class="text-xl font-semibold mb-4 text-gray-700">Shipping Details</h3>
+            <form method="post" action="{% url 'place_order' %}" class="space-y-4">
+                {% csrf_token %}
+                {{ order_form.as_p }}
+                <button type="submit" class="btn btn-primary">Place Order</button>
+            </form>
+        </div>
+    {% else %}
+        <p class="text-gray-600">Your cart is empty.</p>
+        <a href="{% url 'user_dashboard' %}" class="btn btn-primary mt-4">Continue Shopping</a>
+    {% endif %}
+</div>
+{% endblock %}

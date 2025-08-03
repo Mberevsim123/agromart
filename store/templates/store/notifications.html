@@ -1,0 +1,40 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Notifications - Agromart{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 class="text-2xl font-semibold mb-4">Notifications</h2>
+    {% if notifications %}
+        <ul class="space-y-2">
+            {% for notification in notifications %}
+                <li class="p-2 border-b {% if not notification.is_read %}bg-yellow-100{% endif %}">
+                    <p>{{ notification.message }}</p>
+                    <p class="text-sm text-gray-500">{{ notification.created_at|date:"M d, Y" }}</p>
+                    {% if not notification.is_read %}
+                        <form method="post" action="{% url 'notifications' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="notification_id" value="{{ notification.id }}">
+                            <button type="submit" class="btn btn-secondary text-sm">Mark as Read</button>
+                        </form>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+        <!-- Pagination -->
+        {% if is_paginated %}
+            <div class="mt-4 flex justify-between">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}" class="btn btn-secondary">Previous</a>
+                {% endif %}
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}" class="btn btn-secondary">Next</a>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% else %}
+        <p>No notifications.</p>
+    {% endif %}
+</div>
+{% endblock %}

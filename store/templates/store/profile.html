@@ -1,0 +1,179 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}User Profile - Agromart{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">User Profile</h2>
+
+    <!-- User Information (Read-only Table) -->
+    <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4 text-gray-700">User Information</h3>
+        <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+                <tbody>
+                    <tr class="border-b">
+                        <td class="py-2 px-4 font-semibold text-gray-600">Username</td>
+                        <td class="py-2 px-4">{{ info_form.username.value }}</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="py-2 px-4 font-semibold text-gray-600">Email</td>
+                        <td class="py-2 px-4">{{ info_form.email.value }}</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="py-2 px-4 font-semibold text-gray-600">Phone</td>
+                        <td class="py-2 px-4">{{ info_form.phone.value|default:"Not provided" }}</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="py-2 px-4 font-semibold text-gray-600">Address</td>
+                        <td class="py-2 px-4">{{ info_form.address.value|default:"Not provided" }}</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="py-2 px-4 font-semibold text-gray-600">City</td>
+                        <td class="py-2 px-4">{{ info_form.city.value|default:"Not provided" }}</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="py-2 px-4 font-semibold text-gray-600">Country</td>
+                        <td class="py-2 px-4">{{ info_form.country.value|default:"Not provided" }}</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="py-2 px-4 font-semibold text-gray-600">Postal Code</td>
+                        <td class="py-2 px-4">{{ info_form.postal_code.value|default:"Not provided" }}</td>
+                    </tr>
+                    <tr class="border-b">
+                        <td class="py-2 px-4 font-semibold text-gray-600">Preferred Currency</td>
+                        <td class="py-2 px-4">{{ info_form.preferred_currency.value|default:"USD" }}</td>
+                    </tr>
+                    <tr>
+                        <td class="py-2 px-4 font-semibold text-gray-600">Bio</td>
+                        <td class="py-2 px-4">{{ info_form.bio.value|default:"Not provided" }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Profile Picture -->
+    <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4 text-gray-700">Profile Picture</h3>
+        <div class="flex items-center space-x-4">
+            <img src="{% if user.userprofile.profile_picture %}{{ user.userprofile.profile_picture.url }}{% else %}{% static 'images/default_profile.png' %}{% endif %}" alt="Profile Picture" class="w-24 h-24 rounded-full object-cover">
+            <div>
+                <p class="text-gray-600">Upload a new profile picture below in the Edit Profile section.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Profile Form -->
+    <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4 text-gray-700">Edit Profile</h3>
+        <form method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="update_profile" value="1">
+            <div class="form-group">
+                <label for="{{ profile_form.username.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Username</label>
+                {{ profile_form.username }}
+                {% if profile_form.username.errors %}
+                    <p class="text-red-500 text-sm">{{ profile_form.username.errors.as_text }}</p>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ profile_form.email.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Email</label>
+                {{ profile_form.email }}
+                {% if profile_form.email.errors %}
+                    <p class="text-red-500 text-sm">{{ profile_form.email.errors.as_text }}</p>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ profile_form.phone.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Phone</label>
+                {{ profile_form.phone }}
+                {% if profile_form.phone.errors %}
+                    <p class="text-red-500 text-sm">{{ profile_form.phone.errors.as_text }}</p>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ profile_form.address.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Address</label>
+                {{ profile_form.address }}
+                {% if profile_form.address.errors %}
+                    <p class="text-red-500 text-sm">{{ profile_form.address.errors.as_text }}</p>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ profile_form.city.id_for_label }}" class="block text-gray-700 font-semibold mb-2">City</label>
+                {{ profile_form.city }}
+                {% if profile_form.city.errors %}
+                    <p class="text-red-500 text-sm">{{ profile_form.city.errors.as_text }}</p>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ profile_form.country.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Country</label>
+                {{ profile_form.country }}
+                {% if profile_form.country.errors %}
+                    <p class="text-red-500 text-sm">{{ profile_form.country.errors.as_text }}</p>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ profile_form.postal_code.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Postal Code</label>
+                {{ profile_form.postal_code }}
+                {% if profile_form.postal_code.errors %}
+                    <p class="text-red-500 text-sm">{{ profile_form.postal_code.errors.as_text }}</p>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ profile_form.preferred_currency.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Preferred Currency</label>
+                {{ profile_form.preferred_currency }}
+                {% if profile_form.preferred_currency.errors %}
+                    <p class="text-red-500 text-sm">{{ profile_form.preferred_currency.errors.as_text }}</p>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ profile_form.bio.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Bio</label>
+                {{ profile_form.bio }}
+                {% if profile_form.bio.errors %}
+                    <p class="text-red-500 text-sm">{{ profile_form.bio.errors.as_text }}</p>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ profile_form.profile_picture.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Profile Picture</label>
+                {{ profile_form.profile_picture }}
+                {% if profile_form.profile_picture.errors %}
+                    <p class="text-red-500 text-sm">{{ profile_form.profile_picture.errors.as_text }}</p>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary">Update Profile</button>
+        </form>
+    </div>
+
+    <!-- Change Password Form -->
+    <div class="mb-8">
+        <h3 class="text-xl font-semibold mb-4 text-gray-700">Change Password</h3>
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            <input type="hidden" name="change_password" value="1">
+            <div class="form-group">
+                <label for="{{ password_form.current_password.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Current Password</label>
+                {{ password_form.current_password }}
+                {% if password_form.current_password.errors %}
+                    <p class="text-red-500 text-sm">{{ password_form.current_password.errors.as_text }}</p>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ password_form.new_password.id_for_label }}" class="block text-gray-700 font-semibold mb-2">New Password</label>
+                {{ password_form.new_password }}
+                {% if password_form.new_password.errors %}
+                    <p class="text-red-500 text-sm">{{ password_form.new_password.errors.as_text }}</p>
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ password_form.confirm_password.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Confirm New Password</label>
+                {{ password_form.confirm_password }}
+                {% if password_form.confirm_password.errors %}
+                    <p class="text-red-500 text-sm">{{ password_form.confirm_password.errors.as_text }}</p>
+                {% endif %}
+            </div>
+            <button type="submit" class="btn btn-primary">Change Password</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

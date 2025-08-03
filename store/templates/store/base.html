@@ -1,0 +1,131 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Agromart{% endblock %}</title>
+    <!-- Tailwind CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome CDN for social media icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link href="{% static 'css/styles.css' %}" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-100 font-sans flex flex-col min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-green-600 text-white p-4 shadow-md">
+        <div class="container mx-auto flex items-center justify-between">
+            <!-- Logo -->
+            <a href="{% url 'user_dashboard' %}" class="text-2xl font-bold">Agromart</a>
+            <!-- Tools Bar -->
+            <div class="flex space-x-4">
+                <a href="{% url 'static_page' page='about' %}" class="hover:text-green-200">About</a>
+                <a href="{% url 'static_page' page='farming_experience' %}" class="hover:text-green-200">Farming Experience</a>
+                <a href="{% url 'static_page' page='types_of_farming' %}" class="hover:text-green-200">Types of Farming</a>
+                <a href="{% url 'static_page' page='annual_report' %}" class="hover:text-green-200">Annual Report</a>
+                <a href="{% url 'static_page' page='annual_cultivation' %}" class="hover:text-green-200">Annual Cultivation</a>
+                <a href="{% url 'static_page' page='harvest_report' %}" class="hover:text-green-200">Harvest Report</a>
+                <a href="{% url 'static_page' page='contact' %}" class="hover:text-green-200">Contact</a>
+                <a href="{% url 'static_page' page='faq' %}" class="hover:text-green-200">FAQ</a>
+            </div>
+            <!-- Profile -->
+            <div class="relative group">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'user_profile' %}">
+                        {% if user.userprofile.profile_picture %}
+                            <img src="{{ user.userprofile.profile_picture.url }}" alt="Profile" class="w-8 h-8 rounded-full">
+                        {% else %}
+                            <img src="{% static 'images/default_profile.png' %}" alt="Profile" class="w-8 h-8 rounded-full">
+                        {% endif %}
+                    </a>
+                    <div class="absolute right-0 mt-2 w-48 bg-white text-black rounded-md shadow-lg hidden group-hover:block navbar-dropdown">
+                        <a href="{% url 'user_profile' %}" class="block px-4 py-2 hover:bg-gray-100">Description</a>
+                        <a href="{% url 'user_profile' %}" class="block px-4 py-2 hover:bg-gray-100">Upload Picture</a>
+                        <a href="{% url 'user_profile' %}" class="block px-4 py-2 hover:bg-gray-100">User Information</a>
+                        <a href="{% url 'user_profile' %}" class="block px-4 py-2 hover:bg-gray-100">Edit Profile</a>
+                        <a href="{% url 'logout' %}" class="block px-4 py-2 hover:bg-gray-100">Logout</a>
+                    </div>
+                {% else %}
+                    <a href="{% url 'login' %}" class="hover:text-green-200">Login</a>
+                    <a href="{% url 'register' %}" class="hover:text-green-200 ml-2">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="flex flex-1 container mx-auto my-8">
+        <!-- Left Panel -->
+        <aside class="left-panel min-w-[200px] w-48 p-4 mt-4">
+            <h3 class="text-lg font-semibold mb-4 text-white">Navigation</h3>
+            <ul class="space-y-2">
+                <li><a href="{% url 'user_dashboard' %}" class="text-white hover:underline">Dashboard</a></li>
+                <li><a href="{% url 'product_list' %}" class="text-white hover:underline">Product List</a></li>
+                <li><a href="{% url 'cart' %}" class="text-white hover:underline">Cart {% if user.is_authenticated and cart_items > 0 %}({{ cart_items }}){% endif %}</a></li>
+                <li><a href="{% url 'order_create' %}" class="text-white hover:underline">Place Order</a></li>
+            </ul>
+            <!-- Social Media Icons -->
+            <div class="mt-6 flex space-x-4 social-icons">
+                <a href="#" class="text-white hover:text-gray-200"><i class="fab fa-facebook-f text-xl"></i></a>
+                <a href="#" class="text-white hover:text-gray-200"><i class="fab fa-twitter text-xl"></i></a>
+                <a href="#" class="text-white hover:text-gray-200"><i class="fab fa-instagram text-xl"></i></a>
+                <a href="#" class="text-white hover:text-gray-200"><i class="fab fa-whatsapp text-xl"></i></a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 mx-4 overflow-y-auto max-h-screen">
+            {% if messages %}
+                <div class="mb-4">
+                    {% for message in messages %}
+                        <div class="alert p-4 rounded {% if message.tags == 'success' %}bg-green-100 text-green-800{% elif message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-blue-100 text-blue-800{% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+            {% block content %}
+            {% endblock %}
+        </main>
+
+        <!-- Right Panel -->
+        <aside class="right-panel min-w-[200px] w-48 p-4">
+            <h3 class="text-lg font-semibold mb-4 text-white">Navigation</h3>
+            <ul class="space-y-2">
+                <li><a href="{% url 'order_history' %}" class="text-white hover:underline">Order History</a></li>
+                <li><a href="{% url 'notifications' %}" class="text-white hover:underline">Notifications {% if user.is_authenticated and notifications.count > 0 %}({{ notifications.count }}){% endif %}</a></li>
+                {% if user.is_authenticated %}
+                    <li><a href="{% url 'payment' %}" class="text-white hover:underline">Make Payment</a></li>
+                {% else %}
+                    <li><a href="{% url 'login' %}" class="text-white hover:underline">Login</a></li>
+                    <li><a href="{% url 'register' %}" class="text-white hover:underline">Register</a></li>
+                {% endif %}
+            </ul>
+            {% if user.is_authenticated and notifications %}
+                <h3 class="text-lg font-semibold mt-6 mb-4 text-white">Recent Notifications</h3>
+                <ul class="space-y-2">
+                    {% for notification in notifications %}
+                        <li class="text-sm text-white {% if not notification.is_read %}font-bold{% endif %}">
+                            {{ notification.message }} ({{ notification.created_at|date:"M d, Y" }})
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </aside>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-black text-white p-4 mt-auto w-full">
+        <div class="container mx-auto text-center">
+            <p>&copy; {% now "Y" %} Agromart. All rights reserved.</p>
+            <p>Contact: <a href="{% url 'static_page' page='contact' %}" class="underline hover:text-green-200">Get in touch</a></p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    {% block javascript %}
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,20 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}About Us - Agromart{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">About Agromart</h2>
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <img src="{% static 'images/placeholder.jpg' %}" alt="Agromart Farm" class="w-full h-64 object-cover rounded-lg mb-4">
+        <p class="text-gray-600 mb-4">
+            Agromart is your trusted online marketplace for fresh, high-quality agricultural products. Founded in 2020, our mission is to connect farmers directly with consumers, ensuring sustainable farming practices and fair prices. We offer a wide range of products, from organic vegetables to farm-fresh dairy, all sourced from certified farmers across the globe.
+        </p>
+        <p class="text-gray-600 mb-4">
+            Our vision is to revolutionize the agricultural supply chain by leveraging technology to provide transparency, traceability, and convenience. Whether you're a home cook or a business owner, Agromart is here to deliver the best of the farm to your doorstep.
+        </p>
+        <a href="{% url 'user_dashboard' %}" class="btn btn-primary">Shop Now</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,63 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Contact Us - Agromart{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Contact Us</h2>
+    {% if messages %}
+        <div class="mb-4">
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-semibold mb-4 text-gray-700">Get in Touch</h3>
+            <form method="post" class="space-y-4">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.name.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Name</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <p class="text-red-500 text-sm">{{ form.name.errors.as_text }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Email</label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <p class="text-red-500 text-sm">{{ form.email.errors.as_text }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.subject.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Subject</label>
+                    {{ form.subject }}
+                    {% if form.subject.errors %}
+                        <p class="text-red-500 text-sm">{{ form.subject.errors.as_text }}</p>
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.message.id_for_label }}" class="block text-gray-700 font-semibold mb-2">Message</label>
+                    {{ form.message }}
+                    {% if form.message.errors %}
+                        <p class="text-red-500 text-sm">{{ form.message.errors.as_text }}</p>
+                    {% endif %}
+                </div>
+                <button type="submit" class="btn btn-primary">Send Message</button>
+            </form>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-semibold mb-4 text-gray-700">Contact Information</h3>
+            <p class="text-gray-600 mb-2"><strong>Email:</strong> support@agromart.com</p>
+            <p class="text-gray-600 mb-2"><strong>Phone:</strong> +1-800-AGRO-MART</p>
+            <p class="text-gray-600 mb-4"><strong>WhatsApp:</strong> <a href="https://wa.me/1234567890" class="text-green-500 hover:underline">+1-234-567-890</a></p>
+            <p class="text-gray-600">Our team is available Monday to Friday, 9 AM to 5 PM. For urgent inquiries, use our WhatsApp line.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

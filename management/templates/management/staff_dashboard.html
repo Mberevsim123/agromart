@@ -1,0 +1,206 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block title %}Staff Dashboard - Agromart{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h2 class="text-2xl font-bold mb-6 text-gray-800">Staff Dashboard</h2>
+    {% if messages %}
+        <div class="mb-4">
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'success' %}alert-success{% elif message.tags == 'error' %}alert-danger{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <h3 class="text-lg font-semibold text-gray-700">Total Products</h3>
+            <p class="text-2xl text-gray-600">{{ total_products }}</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <h3 class="text-lg font-semibold text-gray-700">Low Stock Products</h3>
+            <p class="text-2xl text-gray-600">{{ low_stock_products }}</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <h3 class="text-lg font-semibold text-gray-700">Total Orders</h3>
+            <p class="text-2xl text-gray-600">{{ total_orders }}</p>
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-4">
+            <h3 class="text-lg font-semibold text-gray-700">Active Staff</h3>
+            <p class="text-2xl text-gray-600">{{ total_staff }}</p>
+        </div>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-semibold mb-4 text-gray-700">Recent Orders</h3>
+            {% if recent_orders %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-2 text-left">Order ID</th>
+                                <th class="p-2 text-left">User</th>
+                                <th class="p-2 text-left">Total</th>
+                                <th class="p-2 text-left">Status</th>
+                                <th class="p-2 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for order in recent_orders %}
+                                <tr class="border-b">
+                                    <td class="p-2">{{ order.id }}</td>
+                                    <td class="p-2">{{ order.user.username }}</td>
+                                    <td class="p-2">${{ order.total_price|floatformat:2 }}</td>
+                                    <td class="p-2">{{ order.status|title }}</td>
+                                    <td class="p-2">
+                                        <a href="{% url 'management:order_edit' order.pk %}" class="btn btn-primary text-sm">Edit</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-gray-600">No recent orders.</p>
+            {% endif %}
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-semibold mb-4 text-gray-700">Low Stock Products</h3>
+            {% if low_stock_list %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-2 text-left">Product</th>
+                                <th class="p-2 text-left">Category</th>
+                                <th class="p-2 text-left">Stock</th>
+                                <th class="p-2 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in low_stock_list %}
+                                <tr class="border-b">
+                                    <td class="p-2">{{ product.name }}</td>
+                                    <td class="p-2">{{ product.category.name|default:'Uncategorized' }}</td>
+                                    <td class="p-2">{{ product.stock }}</td>
+                                    <td class="p-2">
+                                        <a href="{% url 'management:product_edit' product.pk %}" class="btn btn-primary text-sm">Edit</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-gray-600">No low stock products.</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-semibold mb-4 text-gray-700">Active Farm Tools</h3>
+            {% if farm_tools %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-2 text-left">Tool</th>
+                                <th class="p-2 text-left">Type</th>
+                                <th class="p-2 text-left">Location</th>
+                                <th class="p-2 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for tool in farm_tools %}
+                                <tr class="border-b">
+                                    <td class="p-2">{{ tool.name }}</td>
+                                    <td class="p-2">{{ tool.tool_type|title }}</td>
+                                    <td class="p-2">{{ tool.location.name|default:'Unknown' }}</td>
+                                    <td class="p-2">
+                                        <a href="{% url 'management:farm_tool_edit' tool.pk %}" class="btn btn-primary text-sm">Edit</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-gray-600">No active farm tools.</p>
+            {% endif %}
+        </div>
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-xl font-semibold mb-4 text-gray-700">Inventory Items</h3>
+            {% if inventory_items %}
+                <div class="overflow-x-auto">
+                    <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="p-2 text-left">Item</th>
+                                <th class="p-2 text-left">Location</th>
+                                <th class="p-2 text-left">Quantity</th>
+                                <th class="p-2 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in inventory_items %}
+                                <tr class="border-b">
+                                    <td class="p-2">{{ item.product.name|default:item.farm_tool.name }}</td>
+                                    <td class="p-2">{{ item.location.name|default:'Unknown' }}</td>
+                                    <td class="p-2">{{ item.quantity }} {{ item.unit }}</td>
+                                    <td class="p-2">
+                                        <a href="{% url 'management:inventory_edit' item.pk %}" class="btn btn-primary text-sm">Edit</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p class="text-gray-600">No inventory items.</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-xl font-semibold mb-4 text-gray-700">Top Customers</h3>
+        {% if top_customers %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full bg-white border border-gray-300 rounded-lg">
+                    <thead>
+                        <tr class="bg-gray-100">
+                            <th class="p-2 text-left">Customer</th>
+                            <th class="p-2 text-left">Orders</th>
+                            <th class="p-2 text-left">Total Spent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for customer in top_customers %}
+                            <tr class="border-b">
+                                <td class="p-2">{{ customer.username }}</td>
+                                <td class="p-2">{{ customer.order_count }}</td>
+                                <td class="p-2">${{ customer.total_spent|floatformat:2|default:"0.00" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="text-gray-600">No customer data available.</p>
+        {% endif %}
+    </div>
+    <div class="mt-6">
+        <h3 class="text-xl font-semibold mb-4 text-gray-700">Management Actions</h3>
+        <div class="flex flex-wrap gap-4">
+            <a href="{% url 'management:product_add' %}" class="btn btn-primary">Add Product</a>
+            <a href="{% url 'management:farm_tool_add' %}" class="btn btn-primary">Add Farm Tool</a>
+            <a href="{% url 'management:staff_add' %}" class="btn btn-primary">Add Staff</a>
+            <a href="{% url 'management:inventory_add' %}" class="btn btn-primary">Add Inventory</a>
+            <a href="{% url 'admin:store_product_changelist' %}" class="btn btn-primary">Manage Products (Admin)</a>
+            <a href="{% url 'admin:store_order_changelist' %}" class="btn btn-primary">Manage Orders (Admin)</a>
+            <a href="{% url 'admin:store_staff_changelist' %}" class="btn btn-primary">Manage Staff (Admin)</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

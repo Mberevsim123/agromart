@@ -1,0 +1,102 @@
+/* Custom styles for Agromart */
+body {
+    font-family: 'Arial', sans-serif;
+}
+
+/* Button styles */
+.btn {
+    @apply px-4 py-2 rounded transition-colors;
+}
+
+.btn-primary {
+    @apply bg-green-500 text-white hover:bg-green-700;
+}
+
+.btn-secondary {
+    @apply bg-gray-500 text-white hover:bg-gray-700;
+}
+
+.btn-danger {
+    @apply bg-red-500 text-white hover:bg-red-700;
+}
+
+.btn-nav {
+    @apply bg-green-600 text-white w-full py-2 mb-2 rounded hover:bg-green-700 transition-colors;
+}
+
+/* Card styles */
+.card {
+    @apply bg-white rounded-lg shadow-md p-4;
+}
+
+.card img {
+    @apply w-full h-48 object-cover rounded-t-lg;
+}
+
+/* Form styles */
+.form-group {
+    @apply mb-4;
+}
+
+.form-group label {
+    @apply block text-gray-700 font-semibold mb-2;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    @apply border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-green-500;
+}
+
+/* Left and Right Panel styles */
+html body div.container aside.left-panel {
+    background-color: #3CB371 !important;
+    @apply rounded-xl shadow-xl min-h-[200px];
+}
+
+html body div.container aside.right-panel {
+    background-color: #000000 !important;
+    @apply rounded-xl shadow-xl min-h-[200px];
+}
+
+.left-panel ul li a, .right-panel ul li a {
+    @apply block bg-slate-500 text-white py-2 px-3 rounded-md hover:bg-slate-600 transition-colors;
+}
+
+.left-panel h3, .right-panel h3, .right-panel li.text-sm {
+    @apply text-white;
+}
+
+/* Social media icons */
+.left-panel .social-icons a {
+    @apply text-white hover:text-gray-200;
+}
+
+/* Navbar dropdown */
+.navbar-dropdown {
+    @apply bg-white text-black rounded-md shadow-lg w-48;
+}
+
+.navbar-dropdown a {
+    @apply block px-4 py-2 hover:bg-gray-100;
+}
+
+.group:hover .group-hover\:block {
+    display: block;
+}
+
+/* Ensure dropdown is above other elements */
+.navbar-dropdown {
+    z-index: 10;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .navbar-links {
+        @apply flex flex-col space-y-2 mt-2;
+    }
+
+    .left-panel, .right-panel {
+        @apply w-full mb-4;
+    }
+}
