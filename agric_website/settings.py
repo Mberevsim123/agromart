@@ -1,6 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
+import dj_database_url
 
 load_dotenv()
 
@@ -58,10 +59,11 @@ WSGI_APPLICATION = 'agric_website.wsgi.application'
 
 # Database - Use PostgreSQL for production (SQLite is fine for testing)
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',  # For production: use PostgreSQL
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default='sqlite:///' + str(BASE_DIR / 'db.sqlite3'),
+        conn_max_age=600,
+        ssl_require=not DEBUG
+    )
 }
 
 # Password validation
