@@ -63,13 +63,14 @@ WSGI_APPLICATION = 'agric_website.wsgi.application'
 # Database configuration
 if DEBUG:
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+        'default': dj_database_url.config(
+            default='postgres://store_user:storepass@localhost:5432/store_db',
+            conn_max_age=600,
+            ssl_require=False  # <-- disable SSL locally
+        )
     }
 else:
-    database_url = os.environ.get('DATABASE_URL', None)
+    database_url = os.environ.get('DATABASE_URL')
     if not database_url:
         raise ValueError("DATABASE_URL environment variable not set in production")
     DATABASES = {

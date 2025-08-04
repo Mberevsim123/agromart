@@ -1,21 +1,24 @@
-# Exported from Render on 2025-08-04T04:33:37Z
-services:
-- type: web
-  name: agric_website
-  runtime: python
-  repo: https://github.com/Mberevsim123/agromart
-  plan: free
-  envVars:
-  - key: ALLOWED_HOSTS
-    sync: false
-  - key: DATABASE_URL
-    sync: false
-  - key: DEBUG
-    sync: false
-  - key: SECRET_KEY
-    sync: false
-  region: oregon
-  buildCommand: pip install -r requirements.txt
-  startCommand: gunicorn agric_website.wsgi:application
-  autoDeployTrigger: commit
+# render.yaml
 version: "1"
+services:
+  - type: web
+    name: agric_website
+    runtime: python
+    repo: https://github.com/Mberevsim123/agromart
+    plan: free
+    region: oregon
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --no-input
+      python manage.py migrate
+    startCommand: gunicorn agric_website.wsgi:application
+    autoDeploy: true
+    envVars:
+      - key: SECRET_KEY
+        sync: false
+      - key: DEBUG
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: ALLOWED_HOSTS
+        sync: false
