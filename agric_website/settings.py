@@ -16,7 +16,8 @@ DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 if not DEBUG and not SECRET_KEY:
     raise ValueError("DJANGO_SECRET_KEY environment variable not set!")
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost").split(",")
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,agric-website.onrender.com").split(",")
+print(f"ALLOWED_HOSTS: {ALLOWED_HOSTS}")  # Debug logging
 
 # Application definition
 INSTALLED_APPS = [
@@ -64,13 +65,16 @@ WSGI_APPLICATION = 'agric_website.wsgi.application'
 # Database
 if DEBUG:
     DATABASES = {
-        'default': dj_database_url.config(
-            default='sqlite:///db.sqlite3',  # Use SQLite locally
-            conn_max_age=600,
-            ssl_require=False
-        )
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
 else:
+    database_url = os.environ.get('DATABASE_URL', None)
+    print(f"DATABASE_URL: {database_url}")  # Debug logging
+    if not database_url:
+        raise ValueError("DATABASE_URL environment variable not set in production")
     DATABASES = {
         'default': dj_database_url.config(
             conn_max_age=600,
@@ -115,6 +119,7 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 SECURE_HSTS_PRELOAD = not DEBUG
 SECURE_CONTENT_TYPE_NOSNIFF = not DEBUG
 SECURE_BROWSER_XSS_FILTER = not DEBUG
+SECURE_SSL_REDIRECT = not DEBUG  # Enforce HTTPS in production
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

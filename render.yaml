@@ -2,23 +2,27 @@
 version: "1"
 services:
   - type: web
-    name: agric_website
-    runtime: python
-    repo: https://github.com/Mberevsim123/agromart
-    plan: free
+    name: agromart
+    env: python
     region: oregon
+    plan: free
     buildCommand: |
       pip install -r requirements.txt
-      python manage.py collectstatic --no-input
-      python manage.py migrate
+      python manage.py collectstatic --noinput
     startCommand: gunicorn agric_website.wsgi:application
-    autoDeploy: true
     envVars:
-      - key: SECRET_KEY
-        sync: false
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
       - key: DEBUG
-        sync: false
+        value: False
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: store_db
+          property: connectionString
       - key: ALLOWED_HOSTS
-        sync: false
+        value: agric-website.onrender.com,localhost
+
+databases:
+  - name: store_db
+    region: oregon
+    plan: free
