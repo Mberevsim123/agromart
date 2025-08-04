@@ -13,12 +13,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Security
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
-
-# Log environment variables for debugging (avoid logging sensitive data)
-logger.info(f"DEBUG: {DEBUG}")
-logger.info(f"ALLOWED_HOSTS: {os.getenv('ALLOWED_HOSTS')}")
-
-# Raise error if SECRET_KEY is missing in production
+logger.info(f"Environment variables: { {k: v for k, v in os.environ.items() if k != 'DJANGO_SECRET_KEY'} }")
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "agric-website.onrender.com").split(",")
 if not DEBUG and not SECRET_KEY:
     logger.error("Production SECRET_KEY is missing!")
     raise ValueError("Production SECRET_KEY is missing!")

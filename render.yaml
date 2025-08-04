@@ -5,7 +5,10 @@ services:
     region: oregon
     plan: free
     buildCommand: |
-      echo "Checking DJANGO_SECRET_KEY: $DJANGO_SECRET_KEY"
+      echo "Checking environment variables:"
+      echo "DJANGO_SECRET_KEY: $DJANGO_SECRET_KEY"
+      echo "DATABASE_URL: $DATABASE_URL"
+      echo "ALLOWED_HOSTS: $ALLOWED_HOSTS"
       pip install -r requirements.txt
       python manage.py collectstatic --noinput
       python manage.py migrate
@@ -25,7 +28,6 @@ services:
         value: "1"
       - key: PYTHON_VERSION
         value: "3.11"
-
 databases:
   - name: store_db
     region: oregon
