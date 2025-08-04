@@ -27,15 +27,17 @@ class RegisterForm(UserCreationForm):
         user = super().save(commit=False)
         if commit:
             user.save()
-            UserProfile.objects.create(
+            UserProfile.objects.get_or_create(
                 user=user,
-                phone=self.cleaned_data['phone'],
-                address=self.cleaned_data['address'],
-                city=self.cleaned_data['city'],
-                country=self.cleaned_data['country'],
-                postal_code=self.cleaned_data['postal_code'],
-                profile_picture=self.cleaned_data['profile_picture'],
-                bio=self.cleaned_data['bio']
+                defaults={
+                    'phone': self.cleaned_data['phone'],
+                    'address': self.cleaned_data['address'],
+                    'city': self.cleaned_data['city'],
+                    'country': self.cleaned_data['country'],
+                    'postal_code': self.cleaned_data['postal_code'],
+                    'profile_picture': self.cleaned_data['profile_picture'],
+                    'bio': self.cleaned_data['bio']
+                }
             )
         return user
 

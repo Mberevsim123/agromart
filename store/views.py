@@ -246,6 +246,7 @@ class PlaceOrderView(LoginRequiredMixin, View):
 
 # Place Order (Direct Product Selection)
 class OrderCreateView(LoginRequiredMixin, FormView):
+    login_url = '/login/'  # Add this
     template_name = 'store/order.html'
     form_class = OrderForm
     success_url = reverse_lazy('payment')

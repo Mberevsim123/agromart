@@ -21,6 +21,7 @@ if not DEBUG and not SECRET_KEY:
 
 # ALLOWED_HOSTS for Render domain
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "agric-website.onrender.com").split(",")
+LOGIN_URL = '/login/'
 
 # Applications
 INSTALLED_APPS = [
