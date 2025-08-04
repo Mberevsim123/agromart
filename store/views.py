@@ -84,7 +84,6 @@ class UserDashboardView(ListView):
             context['cart_items'] = 0
         return context
 
-# Product List
 class ProductListView(ListView):
     template_name = 'store/product_list.html'
     context_object_name = 'products'
