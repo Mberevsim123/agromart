@@ -3,20 +3,22 @@ from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
 
-# Load environment variables
+# Load environment variables from .env
 load_dotenv()
 
-# Build paths
+# Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Secret Key and Debug
+# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
-if not SECRET_KEY and not DEBUG:
-    raise ValueError("DJANGO_SECRET_KEY environment variable not set in production")
-DEBUG = os.environ.get("DEBUG", "False") == "True"
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,agric-website.onrender.com").split(",")
+DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 
-# Installed apps
+if not DEBUG and not SECRET_KEY:
+    raise ValueError("DJANGO_SECRET_KEY environment variable not set!")
+
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost").split(",")
+
+# Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -28,10 +30,9 @@ INSTALLED_APPS = [
     'management',
 ]
 
-# Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # Handles static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -60,19 +61,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'agric_website.wsgi.application'
 
-# Database configuration
+# Database
 if DEBUG:
     DATABASES = {
         'default': dj_database_url.config(
-            default='postgres://store_user:storepass@localhost:5432/store_db',
+            default='sqlite:///db.sqlite3',  # Use SQLite locally
             conn_max_age=600,
-            ssl_require=False  # <-- disable SSL locally
+            ssl_require=False
         )
     }
 else:
-    database_url = os.environ.get('DATABASE_URL')
-    if not database_url:
-        raise ValueError("DATABASE_URL environment variable not set in production")
     DATABASES = {
         'default': dj_database_url.config(
             conn_max_age=600,
@@ -90,7 +88,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'Africa/Lagos'  # Updated to WAT
+TIME_ZONE = 'Africa/Lagos'
 USE_I18N = True
 USE_TZ = True
 
@@ -102,21 +100,21 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# WhiteNoise for static files
+# Static file storage with WhiteNoise
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-
-# Auto Field
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Login redirects
 LOGIN_REDIRECT_URL = 'user_dashboard'
 LOGOUT_REDIRECT_URL = 'user_dashboard'
 
-# Production Security Settings
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
+# Security settings for production
 SESSION_COOKIE_SECURE = not DEBUG
 CSRF_COOKIE_SECURE = not DEBUG
 SECURE_HSTS_SECONDS = 3600 if not DEBUG else 0
 SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 SECURE_HSTS_PRELOAD = not DEBUG
+SECURE_CONTENT_TYPE_NOSNIFF = not DEBUG
+SECURE_BROWSER_XSS_FILTER = not DEBUG
+
+# Default primary key field type
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
