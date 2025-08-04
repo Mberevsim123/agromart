@@ -15,7 +15,7 @@ services:
     startCommand: gunicorn --workers 3 --timeout 120 agric_website.wsgi:application
     envVars:
       - key: DJANGO_SECRET_KEY
-        sync: false
+        sync: false # Value set in Render dashboard
       - key: DEBUG
         value: false
       - key: DATABASE_URL
@@ -27,7 +27,7 @@ services:
       - key: PYTHONUNBUFFERED
         value: "1"
       - key: PYTHON_VERSION
-        value: "3.11"
+        value: "3.11.9"
 databases:
   - name: store_db
     region: oregon
