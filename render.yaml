@@ -11,9 +11,9 @@ services:
     startCommand: gunicorn agric_website.wsgi:application
     envVars:
       - key: DJANGO_SECRET_KEY
-        generateValue: true
+        value: (m36c_)j-g3@%4cl+t79@%@uf&4#%u8hsyu^sy87vb2^!e--+f
       - key: DEBUG
-        value: False
+        value: false
       - key: DATABASE_URL
         fromDatabase:
           name: store_db
