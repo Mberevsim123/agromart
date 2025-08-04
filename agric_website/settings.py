@@ -1,15 +1,11 @@
 import os
 from pathlib import Path
-from dotenv import load_dotenv
 import dj_database_url
 import logging
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
-
-# Load .env file
-load_dotenv()
 
 # Paths
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,11 +14,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 DEBUG = os.getenv("DEBUG", "False").lower() == "true"
 
+# Log environment variables for debugging (avoid logging sensitive data)
+logger.info(f"DEBUG: {DEBUG}")
+logger.info(f"ALLOWED_HOSTS: {os.getenv('ALLOWED_HOSTS')}")
+
+# Raise error if SECRET_KEY is missing in production
 if not DEBUG and not SECRET_KEY:
+    logger.error("Production SECRET_KEY is missing!")
     raise ValueError("Production SECRET_KEY is missing!")
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
-logger.info(f"ALLOWED_HOSTS: {ALLOWED_HOSTS}")
+# ALLOWED_HOSTS for Render domain
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "agric-website.onrender.com").split(",")
 
 # Applications
 INSTALLED_APPS = [
@@ -39,7 +41,7 @@ INSTALLED_APPS = [
 # Middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",  # Serve static files in production
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -80,11 +82,13 @@ if DEBUG:
 else:
     database_url = os.getenv("DATABASE_URL")
     if not database_url:
+        logger.error("DATABASE_URL must be set in production.")
         raise ValueError("DATABASE_URL must be set in production.")
     DATABASES = {
         "default": dj_database_url.config(
             default=database_url,
             conn_max_age=600,
+            conn_health_checks=True,
             ssl_require=True,
         )
     }

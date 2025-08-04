@@ -5,13 +5,14 @@ services:
     region: oregon
     plan: free
     buildCommand: |
+      echo "Checking DJANGO_SECRET_KEY: $DJANGO_SECRET_KEY"
       pip install -r requirements.txt
       python manage.py collectstatic --noinput
       python manage.py migrate
-    startCommand: gunicorn agric_website.wsgi:application
+    startCommand: gunicorn --workers 3 --timeout 120 agric_website.wsgi:application
     envVars:
       - key: DJANGO_SECRET_KEY
-        value: (m36c_)j-g3@%4cl+t79@%@uf&4#%u8hsyu^sy87vb2^!e--+f
+        sync: false
       - key: DEBUG
         value: false
       - key: DATABASE_URL
@@ -22,6 +23,8 @@ services:
         value: agric-website.onrender.com
       - key: PYTHONUNBUFFERED
         value: "1"
+      - key: PYTHON_VERSION
+        value: "3.11"
 
 databases:
   - name: store_db
