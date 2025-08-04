@@ -14,7 +14,7 @@ SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
 if not SECRET_KEY and not DEBUG:
     raise ValueError("DJANGO_SECRET_KEY environment variable not set in production")
 DEBUG = os.environ.get("DEBUG", "False") == "True"
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,agromart.onrender.com").split(",")
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,agric-website.onrender.com").split(",")
 
 # Installed apps
 INSTALLED_APPS = [
