@@ -7,12 +7,13 @@ services:
     buildCommand: |
       pip install -r requirements.txt
       python manage.py collectstatic --noinput
+      python manage.py migrate
     startCommand: gunicorn agric_website.wsgi:application
     envVars:
       - key: DJANGO_SECRET_KEY
         generateValue: true
       - key: DEBUG
-        value: False
+        value: True  # Temporary for debugging
       - key: DATABASE_URL
         fromDatabase:
           name: store_db

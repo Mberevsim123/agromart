@@ -76,7 +76,7 @@ if DEBUG:
         }
     }
 else:
-    database_url = os.environ.get('DATABASE_URL', None)
+    database_url = os.environ.get('DATABASE_URL')
     logger.info(f"DATABASE_URL: {database_url}")
     if not database_url:
         raise ValueError("DATABASE_URL environment variable not set in production")
