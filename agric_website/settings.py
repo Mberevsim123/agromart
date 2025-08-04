@@ -3,14 +3,18 @@ from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
 
+# Load environment variables
 load_dotenv()
 
+# Build paths
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Secret Key and Debug
-SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "unsafe-secret-key")
+SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY")
+if not SECRET_KEY and not DEBUG:
+    raise ValueError("DJANGO_SECRET_KEY environment variable not set in production")
 DEBUG = os.environ.get("DEBUG", "False") == "True"
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost").split(",")
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,agromart.onrender.com").split(",")
 
 # Installed apps
 INSTALLED_APPS = [
@@ -20,7 +24,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'store',
     'management',
 ]
@@ -28,7 +31,7 @@ INSTALLED_APPS = [
 # Middleware
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Enables static files in prod
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -42,7 +45,7 @@ ROOT_URLCONF = 'agric_website.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],  # Optional: add custom template path
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -57,7 +60,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'agric_website.wsgi.application'
 
-# Database - Use PostgreSQL for production (SQLite is fine for testing)
+# Database configuration
 if DEBUG:
     DATABASES = {
         'default': {
@@ -66,6 +69,9 @@ if DEBUG:
         }
     }
 else:
+    database_url = os.environ.get('DATABASE_URL', None)
+    if not database_url:
+        raise ValueError("DATABASE_URL environment variable not set in production")
     DATABASES = {
         'default': dj_database_url.config(
             conn_max_age=600,
@@ -83,7 +89,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Africa/Lagos'  # Updated to WAT
 USE_I18N = True
 USE_TZ = True
 
@@ -104,7 +110,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Login redirects
 LOGIN_REDIRECT_URL = 'user_dashboard'
 LOGOUT_REDIRECT_URL = 'user_dashboard'
-
 
 # Production Security Settings
 SECURE_BROWSER_XSS_FILTER = True
