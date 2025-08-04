@@ -2,6 +2,11 @@ import os
 from pathlib import Path
 from dotenv import load_dotenv
 import dj_database_url
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 # Load environment variables from .env
 load_dotenv()
@@ -17,7 +22,7 @@ if not DEBUG and not SECRET_KEY:
     raise ValueError("DJANGO_SECRET_KEY environment variable not set!")
 
 ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1,agric-website.onrender.com").split(",")
-print(f"ALLOWED_HOSTS: {ALLOWED_HOSTS}")  # Debug logging
+logger.info(f"ALLOWED_HOSTS: {ALLOWED_HOSTS}")
 
 # Application definition
 INSTALLED_APPS = [
@@ -33,7 +38,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # Handles static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -72,7 +77,7 @@ if DEBUG:
     }
 else:
     database_url = os.environ.get('DATABASE_URL', None)
-    print(f"DATABASE_URL: {database_url}")  # Debug logging
+    logger.info(f"DATABASE_URL: {database_url}")
     if not database_url:
         raise ValueError("DATABASE_URL environment variable not set in production")
     DATABASES = {
@@ -119,7 +124,7 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = not DEBUG
 SECURE_HSTS_PRELOAD = not DEBUG
 SECURE_CONTENT_TYPE_NOSNIFF = not DEBUG
 SECURE_BROWSER_XSS_FILTER = not DEBUG
-SECURE_SSL_REDIRECT = not DEBUG  # Enforce HTTPS in production
+SECURE_SSL_REDIRECT = not DEBUG
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
