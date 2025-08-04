@@ -16,7 +16,7 @@ DEBUG = os.environ.get("DEBUG", "False").lower() == "true"
 if not DEBUG and not SECRET_KEY:
     raise ValueError("DJANGO_SECRET_KEY environment variable not set!")
 
-ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,agric-website.onrender.com").split(",")
+ALLOWED_HOSTS = os.environ.get("ALLOWED_HOSTS", "localhost,127.0.0.1,agric-website.onrender.com").split(",")
 print(f"ALLOWED_HOSTS: {ALLOWED_HOSTS}")  # Debug logging
 
 # Application definition
