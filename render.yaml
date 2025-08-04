@@ -19,7 +19,9 @@ services:
           name: store_db
           property: connectionString
       - key: ALLOWED_HOSTS
-        value: agric-website.onrender.com,localhost,127.0.0.1
+        value: agric-website.onrender.com
+      - key: PYTHONUNBUFFERED
+        value: "1"
 
 databases:
   - name: store_db
